@@ -7,7 +7,7 @@ from  pkg_resources import Requirement, resource_filename
 #run nucmer
 
 
-ref = resource_filename(Requirement.parse('quanttb'), 'quanttb/data/GCF_000277735.2_ASM27773v2_genomic.fna')
+ref = resource_filename(Requirement.parse('quanttb'), 'quanttb/data/HE601870.fasta')
 
 def runnucmer(fastafile, outputfile):
 	if not os.path.isfile(fastafile):
