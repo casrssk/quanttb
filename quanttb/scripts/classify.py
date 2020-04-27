@@ -24,39 +24,39 @@ resource_filename(Requirement.parse('quanttb'), 'quanttb/data')
 
 
 ref = resource_filename(Requirement.parse('quanttb'),
-                        'quanttb/data/GCF_000277735.2_ASM27773v2_genomic.fna')
+                        'quanttb/data/HE601870.fasta')
 with open(ref, "r") as reffile:
     refdata = reffile.read()
 refdata = "".join(refdata.split()[6:])
 refdata = "0" + refdata
 
-# getting mutation dictionary for antibiotic resistance
-mutable = {}
-mutlist = resource_filename(Requirement.parse(
-    'quanttb'), 'quanttb/data/snpmutlist.txt')
-with open(mutlist, 'rb') as f:
-    f.readline()
-    for line in f:
-        snp = line.rstrip().split(',')
-        pos = int(snp[0])
-        if pos in mutable:
-            mutable[pos]['alt'].append(snp[2])
-        else:
-            mutable[pos] = {'drug': snp[3], 'alt': [snp[2]]}
+# # getting mutation dictionary for antibiotic resistance
+# mutable = {}
+# mutlist = resource_filename(Requirement.parse(
+#     'quanttb'), 'quanttb/data/snpmutlist.txt')
+# with open(mutlist, 'rb') as f:
+#     f.readline()
+#     for line in f:
+#         snp = line.rstrip().split(',')
+#         pos = int(snp[0])
+#         if pos in mutable:
+#             mutable[pos]['alt'].append(snp[2])
+#         else:
+#             mutable[pos] = {'drug': snp[3], 'alt': [snp[2]]}
 
-ranges = resource_filename(Requirement.parse(
-    'quanttb'), 'quanttb/data/pegenes.tsv')
-with open(ranges, 'r') as file:
-    ranges = file.read().split('\n')
+# ranges = resource_filename(Requirement.parse(
+#     'quanttb'), 'quanttb/data/pegenes.tsv')
+# with open(ranges, 'r') as file:
+#     ranges = file.read().split('\n')
 
-ranges = [x for x in ranges if len(x) != 0]
-ranges = [y.split() for y in ranges]
-highs = np.array([int(y[1]) for y in ranges])
-lows = np.array([int(y[0]) for y in ranges])
+# ranges = [x for x in ranges if len(x) != 0]
+# ranges = [y.split() for y in ranges]
+# highs = np.array([int(y[1]) for y in ranges])
+# lows = np.array([int(y[0]) for y in ranges])
 
 
-def in_range(x):
-    return np.any((lows <= x) & (x <= highs))
+# def in_range(x):
+#     return np.any((lows <= x) & (x <= highs))
 
 
 def openFile(filename):
@@ -126,8 +126,8 @@ class Snpset(object):
                     nucleo = "N"
                 elif int(base[5]) < 11:  # removing low quality
                     nucleo = "N"
-                elif in_range(int(base[1])):  # removing PPE sites
-                    nucleo = "N"
+#                 elif in_range(int(base[1])):  # removing PPE sites
+#                     nucleo = "N"
                 elif "Amb" in base[6] and hard == True:
                     nucleo = "N"
                 else:
@@ -190,10 +190,10 @@ class Snpset(object):
         for line in snpfile:
             line = line.split()
             pos = int(line[0])
-            if in_range(pos):
-                nucleo = "N"
-            else:
-                nucleo = line[2]
+#             if in_range(pos):
+#                 nucleo = "N"
+#             else:
+            nucleo = line[2]
             nucs.append(nucleo)
             positions.append(pos)
         snpfile.close()
@@ -208,9 +208,9 @@ class Snpset(object):
         self.getsnpinfo()
 
     def getsnpsdict(self, snptable):
-        self.badpos = [x for x in snptable if in_range(x)]
+#         self.badpos = [x for x in snptable if in_range(x)]
         self.snptable = {pos: nuc for pos,
-                         nuc in snptable.items() if pos not in self.badpos}
+                         nuc in snptable.items()}
         self.orgcount = len(self.snptable)
         if any(isinstance(nuc, dict) for nuc in self.snptable.values()):
             self.hardfilter = False
